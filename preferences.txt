@@ -4,17 +4,29 @@
 % emails: add emails to send files to. Only individual files can be emailed
 
 # dirs {
-	test_dir
+test_dir
+test_dir1
+test_dir2
+
+test_dir4
 }
 
 # files {
-	test_file
+test_file
+test_file1
+test_file2
+
+test_file6
 }
 
 # targets {
-	local
+local
+thisone
+Thatone
 }
 
 # email {
-	test@email.com
+test@email.com
+test1@email.com
+test2@email.com
 }

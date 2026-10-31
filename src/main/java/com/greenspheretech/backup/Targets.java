@@ -18,8 +18,11 @@ import java.nio.file.Path;
  */
 public class Targets {
     
-    ArrayList<Path> TARGET_DIRS;
-    ArrayList<Path> TARGET_FILES;
+    static ArrayList<Path> TARGET_DIRS = new ArrayList<Path>();
+    static ArrayList<Path> TARGET_FILES = new ArrayList<Path>();
+    static ArrayList<Path> TARGET_EMAILS = new ArrayList<Path>();
+    static ArrayList<Path> TARGETS = new ArrayList<Path>();
+    
     
     // parse a single line from the preference file
     // 0 = linetype: header    |    path   |    end of section
@@ -41,9 +44,9 @@ public class Targets {
     }
     
     //get directories from preference file
-    public static Iterable<Path> getTargets () {
+    public static void getTargets () {
         Path prefFile = Backup.PREF_FILE_PATH;
-        String currentSection;
+        int currentSection = 0;
         
         try(BufferedReader reader = Files.newBufferedReader(prefFile)) {
             String line;
@@ -53,15 +56,35 @@ public class Targets {
                     continue;
                 } else {
                     String[] lineParts = parseLine(line);
-                    System.out.println(lineParts[0] + " : " + lineParts[1]);
+                    System.out.println(lineParts[0] + lineParts[1]);
+                    switch(lineParts[0]) {
+                        case "header" -> {
+                            switch(lineParts[1]) {
+                                case "dirs" -> currentSection = 1;
+                                case "files" -> currentSection = 2;
+                                case "emails" -> currentSection = 3;
+                                case "targets" -> currentSection = 4;
+                                default -> System.out.println("bad header section");
+                            }
+                        }
+                        case "path" -> {
+                            switch(currentSection) {
+                                case 1 -> TARGET_DIRS.add(Path.of(lineParts[1]));
+                                case 2 -> TARGET_FILES.add(Path.of(lineParts[1]));
+                                case 3 -> TARGET_EMAILS.add(Path.of(lineParts[1]));
+                                case 4 -> TARGETS.add(Path.of(lineParts[1]));
+                                default -> System.out.println("bad path");
+                            }
+                        }
+                        case "eos" -> currentSection = 0;
+                        default -> System.out.println("bad header");
+                    }
                     
                 }
             }
         } catch(IOException e) {
             e.printStackTrace();
         }
-        
-        return dirPaths;
     }
     
     //get files from preference files or directories

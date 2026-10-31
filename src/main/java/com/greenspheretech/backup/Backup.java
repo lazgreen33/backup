@@ -35,8 +35,6 @@ public class Backup {
    
     
     public static int copyTargets () {
-        Iterable<Path> targetDirs = Targets.getDirectories();
-        Iterable<Path> targetFiles = Targets.getFiles();
         Device.getDeviceNames();
         Targets.copyDirectories();
         Targets.copyFiles();
@@ -47,7 +45,11 @@ public class Backup {
     public static void main(String[] args) {
         setPrefPath();
         Device.getDeviceNames();
-        Targets.getDirectories();
+        Targets.getTargets();
+        System.out.println(Targets.TARGET_DIRS);
+        System.out.println(Targets.TARGET_FILES);
+        System.out.println(Targets.TARGET_EMAILS);
+        System.out.println(Targets.TARGETS);
     }
     
     
