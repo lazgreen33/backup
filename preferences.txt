@@ -1,0 +1,20 @@
+% dirs: add directories to backup
+% files: add individual files to back up
+% targets: add target devices to back up to
+% emails: add emails to send files to. Only individual files can be emailed
+
+# dirs {
+	test_dir
+}
+
+# files {
+	test_file
+}
+
+# targets {
+	local
+}
+
+# email {
+	test@email.com
+}
