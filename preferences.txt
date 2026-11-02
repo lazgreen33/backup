@@ -20,12 +20,10 @@ test_file6
 }
 
 # targets {
-local
-thisone
-Thatone
+F:\
 }
 
-# email {
+# emails {
 test@email.com
 test1@email.com
 test2@email.com

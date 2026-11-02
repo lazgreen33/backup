@@ -35,7 +35,6 @@ public class Backup {
    
     
     public static int copyTargets () {
-        Device.getDeviceNames();
         Targets.copyDirectories();
         Targets.copyFiles();
         
@@ -44,12 +43,8 @@ public class Backup {
 
     public static void main(String[] args) {
         setPrefPath();
-        Device.getDeviceNames();
         Targets.getTargets();
-        System.out.println(Targets.TARGET_DIRS);
-        System.out.println(Targets.TARGET_FILES);
-        System.out.println(Targets.TARGET_EMAILS);
-        System.out.println(Targets.TARGETS);
+        Device.getDeviceInfo();
     }
     
     

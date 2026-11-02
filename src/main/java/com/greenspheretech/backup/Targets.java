@@ -12,6 +12,7 @@ import java.nio.file.Files;
 import java.nio.file.FileSystem;
 import java.nio.file.FileSystems;
 import java.nio.file.Path;
+import java.util.stream.Stream;
 /**
  *
  * @author johni
@@ -22,6 +23,7 @@ public class Targets {
     static ArrayList<Path> TARGET_FILES = new ArrayList<Path>();
     static ArrayList<Path> TARGET_EMAILS = new ArrayList<Path>();
     static ArrayList<Path> TARGETS = new ArrayList<Path>();
+    static long TOTAL_SPACE;
     
     
     // parse a single line from the preference file
@@ -56,7 +58,6 @@ public class Targets {
                     continue;
                 } else {
                     String[] lineParts = parseLine(line);
-                    System.out.println(lineParts[0] + lineParts[1]);
                     switch(lineParts[0]) {
                         case "header" -> {
                             switch(lineParts[1]) {
@@ -85,10 +86,53 @@ public class Targets {
         } catch(IOException e) {
             e.printStackTrace();
         }
+        
+        getTotalSpace();
     }
     
-    //get files from preference files or directories
-   
+    public static long getTotalSpace() {
+        long totalSpace = 0;
+        for(Path file : TARGET_FILES) {
+            long fileSpace = 0;
+            try {
+                fileSpace = Files.size(file);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            totalSpace = totalSpace + fileSpace;
+        }
+        System.out.println("Space after files: " + totalSpace);
+        
+        for(Path dir : TARGET_DIRS) {
+            long dirSpace = 0;
+            try(Stream<Path> paths = Files.walk(dir)) {
+                dirSpace = paths
+                        .filter(Files::isRegularFile)
+                        .mapToLong(path -> {
+                            try {
+                                return Files.size(path);
+                            } catch (IOException e) {
+                                return 0L;
+                            }
+                        })
+                        .sum();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            totalSpace = totalSpace + dirSpace;
+        }
+        System.out.println("Space after dirs: " + totalSpace);
+        
+        return totalSpace;
+    }
+    
+    public static boolean checkSpace (long uSpace) {
+        if(TOTAL_SPACE < uSpace) {
+            return true;
+        } else {
+            return false;
+        }
+    }
     
     // copy directories recursively to devices
     public static void copyDirectories () {
